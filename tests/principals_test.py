@@ -60,3 +60,21 @@ def test_regrade_assignment(client, h_principal):
 
     assert response.json['data']['state'] == AssignmentStateEnum.GRADED.value
     assert response.json['data']['grade'] == GradeEnum.B
+
+def test_get_all_teachers(client, h_principal):
+    """
+    Test the get_all_teachers method of Teacher model
+    """
+    response = client.get(
+        '/principal/teachers',
+        headers=h_principal
+        )
+
+    assert response.status_code == 200
+
+    teachers = response.json['data']
+
+    assert len(teachers) == 2
+    user_ids = {teacher['user_id'] for teacher in teachers}
+    assert user_ids == {3, 4}
+
